@@ -9,7 +9,7 @@ const config: webpack.Configuration = {
     target: 'electron-main',
     externals: [nodeExternals()],
     entry: {
-        main: "./src/index.ts"
+        main: path.resolve(__dirname, "src", "index.ts")
     },
     output: {
         path: path.resolve(__dirname, "dist"),
