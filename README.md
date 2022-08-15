@@ -1,0 +1,4 @@
+# Scrapbox
+
+## LICENSE
+MIT.
