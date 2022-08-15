@@ -170,7 +170,7 @@ async function setActivity() {
       window.webContents.getTitle() === projectName
         ? "Home"
         : window.webContents.getTitle()
-    } ${currentPage ? `(` + currentPage.lines.length + ` lines)` : ""}`,
+    } ${currentPage ? `(` + (currentPage.lines.length - 1) + ` lines)` : ""}`,
     state: `${
       window.webContents.getTitle() === projectName ? "" : "Editing..."
     } (Total: ${pageSize} pages)`,
