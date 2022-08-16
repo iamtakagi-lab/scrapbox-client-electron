@@ -11,29 +11,29 @@ import { app, BrowserWindow } from "electron";
 import { RPC } from "./rpcLoader";
 import fetch from "electron-fetch";
 
-let window: BrowserWindow | null;
+let mainWindow: BrowserWindow | null;
 
 const clientId = "1008185846496763986";
 let rpc: RPC.Client | null;
 let startTimestamp: number;
 
-function createWindow() {
-  window = new BrowserWindow({
+function createMainWindow() {
+  mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
     webPreferences: {
       nodeIntegration: true,
     },
   });
-  window.setTitle("Scarpbox");
-  window.loadURL("https://scrapbox.io");
+  mainWindow.setTitle("Scarpbox");
+  mainWindow.loadURL("https://scrapbox.io");
 
   // ページ遷移 (参照: https://stackoverflow.com/questions/67743453/how-to-switch-electron-between-windows-with-false-or-true-frame-depending-on-th)
-  window.webContents.on("did-navigate-in-page", async (event) => {
+  mainWindow.webContents.on("did-navigate-in-page", async (event) => {
     console.log("did-navigate-in-page");
     pageSize = await getPageSize(); // ページ数を再取得
-    if (!window || window === null) return;
-    const pageUrl = window.webContents.getURL();
+    if (!mainWindow || mainWindow === null) return;
+    const pageUrl = mainWindow.webContents.getURL();
     const slug = pageUrl.split("/").slice(-1)[0];
     if (!slug || !slug.length) {
       currentPage = null;
@@ -44,7 +44,7 @@ function createWindow() {
     console.log("ok");
   });
 
-  window.once("ready-to-show", () => {
+  mainWindow.once("ready-to-show", () => {
     const i = setInterval(async () => {
       await init();
       rpc = new RPC.Client({ transport: "ipc" });
@@ -63,13 +63,13 @@ function createWindow() {
     }, 1000);
   });
 
-  window.on("closed", () => {
-    window = null;
+  mainWindow.on("closed", () => {
+    mainWindow = null;
   });
 }
 
 app.on("ready", () => {
-  createWindow();
+  createMainWindow();
 });
 
 app.on("window-all-closed", () => {
@@ -80,8 +80,8 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  if (window === null) {
-    createWindow();
+  if (mainWindow === null) {
+    createMainWindow();
   }
 });
 
@@ -124,9 +124,9 @@ async function getPageData(slug: string) {
  * 初期化
  */
 async function init() {
-  if (!window || window === null) return;
+  if (!mainWindow || mainWindow === null) return;
 
-  const pageUrl = window.webContents.getURL();
+  const pageUrl = mainWindow.webContents.getURL();
   console.log("url: " + pageUrl);
   projectName = pageUrl.split("/").slice(-2)[0];
   console.log("projectName: " + projectName);
@@ -137,9 +137,9 @@ async function init() {
 }
 
 async function setActivity() {
-  if (!rpc || !window || !projectName || !projectIcon) return;
+  if (!rpc || !mainWindow || !projectName || !projectIcon) return;
 
-  const pageUrl = window.webContents.getURL();
+  const pageUrl = mainWindow.webContents.getURL();
 
   const buttons = [
     { label: "View Scrapbox", url: `https://scrapbox.io/${projectName}/` },
@@ -169,12 +169,12 @@ async function setActivity() {
 
   rpc.setActivity({
     details: `${
-      window.webContents.getTitle() === projectName
+      mainWindow.webContents.getTitle() === projectName
         ? "Home"
-        : window.webContents.getTitle()
+        : mainWindow.webContents.getTitle()
     } ${currentPage ? `(` + (currentPage.lines.length - 1) + ` lines)` : ""}`,
     state: `${
-      window.webContents.getTitle() === projectName ? "" : "Editing..."
+      mainWindow.webContents.getTitle() === projectName ? "" : "Editing..."
     } (Total: ${pageSize} pages)`,
     startTimestamp,
     largeImageKey: largeImage,
@@ -185,5 +185,5 @@ async function setActivity() {
     buttons,
   });
 
-  console.log("page title: " + window.webContents.getTitle());
+  console.log("page title: " + mainWindow.webContents.getTitle());
 }
