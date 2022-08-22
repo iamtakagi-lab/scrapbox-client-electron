@@ -1,6 +1,7 @@
 {
   "name": "scrapbox",
-  "version": "1.0.0",
+  "productName": "Scrapbox",
+  "version": "1.0.1",
   "main": "dist/main.js",
   "author": "iamtakagi",
   "license": "MIT",

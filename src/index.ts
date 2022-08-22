@@ -73,7 +73,7 @@ app.on("ready", () => {
 });
 
 app.on("window-all-closed", () => {
-  if(rpc){
+  if (rpc) {
     rpc.destroy();
   }
   app.quit();
