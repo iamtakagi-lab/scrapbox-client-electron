@@ -11,10 +11,9 @@ import { app, BrowserWindow } from "electron";
 import { RPC } from "./rpcLoader";
 import fetch from "electron-fetch";
 
-let mainWindow: BrowserWindow | null;
-
+let mainWindow: BrowserWindow | undefined;
 const clientId = "1008185846496763986";
-let rpc: RPC.Client | null;
+let rpc: RPC.Client | undefined;
 let startTimestamp: number;
 
 function createMainWindow() {
@@ -30,14 +29,17 @@ function createMainWindow() {
 
   // ページ遷移 (参照: https://stackoverflow.com/questions/67743453/how-to-switch-electron-between-windows-with-false-or-true-frame-depending-on-th)
   mainWindow.webContents.on("did-navigate-in-page", async (event) => {
+    if (!mainWindow) return;
+
     console.log("did-navigate-in-page");
-    pageSize = await getPageSize(); // ページ数を再取得
-    if (!mainWindow || mainWindow === null) return;
+
     const pageUrl = mainWindow.webContents.getURL();
+
+    pageSize = await getPageSize(); // ページ数を再取得
+
     const slug = pageUrl.split("/").slice(-1)[0];
     if (!slug || !slug.length) {
-      currentPage = null;
-      console.log("null");
+      currentPage = undefined;
       return;
     }
     currentPage = await getPageData(slug);
@@ -64,7 +66,7 @@ function createMainWindow() {
   });
 
   mainWindow.on("closed", () => {
-    mainWindow = null;
+    mainWindow = undefined;
   });
 }
 
@@ -80,7 +82,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  if (mainWindow === null) {
+  if (!mainWindow) {
     createMainWindow();
   }
 });
@@ -100,11 +102,11 @@ function isExistsImg(url: string) {
   });
 }
 
-let projectName: string | null; // Scrapbox Project Name
+let projectName: string | undefined; // Scrapbox Project Name
 let projectIcon: string =
   "https://i.gyazo.com/160b81da1cc7cdc1ff87b974914eb15b.png"; // Scrapbox Project Icon
 let pageSize: number = 0;
-let currentPage: any;
+let currentPage: any | undefined
 
 async function getPageSize() {
   if (!projectName) return;
@@ -124,7 +126,7 @@ async function getPageData(slug: string) {
  * 初期化
  */
 async function init() {
-  if (!mainWindow || mainWindow === null) return;
+  if (!mainWindow) return;
 
   const pageUrl = mainWindow.webContents.getURL();
   console.log("url: " + pageUrl);
