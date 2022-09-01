@@ -174,7 +174,7 @@ async function setActivity() {
       mainWindow.webContents.getTitle() === projectName
         ? "Home"
         : mainWindow.webContents.getTitle()
-    } ${currentPage ? `(` + (currentPage.lines.length - 1) + ` lines)` : ""}`,
+    } ${currentPage ? `(` + (currentPage.lines.length) + ` lines)` : ""}`,
     state: `${
       mainWindow.webContents.getTitle() === projectName ? "" : "Editing..."
     } (Total: ${pageSize} pages)`,
