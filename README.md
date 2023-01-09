@@ -1,4 +1,4 @@
-# Scrapbox
+#  scrapbox-client-electron
 
 ## LICENSE
 MIT.
