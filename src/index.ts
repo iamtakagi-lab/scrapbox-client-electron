@@ -24,7 +24,7 @@ function createMainWindow() {
       nodeIntegration: true,
     },
   });
-  mainWindow.setTitle("Scarpbox");
+  mainWindow.setTitle("Scrapbox");
   mainWindow.loadURL("https://scrapbox.io");
 
   // ページ遷移 (参照: https://stackoverflow.com/questions/67743453/how-to-switch-electron-between-windows-with-false-or-true-frame-depending-on-th)
